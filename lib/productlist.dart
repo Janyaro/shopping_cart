@@ -31,6 +31,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
   List<String> productLinks = [
     'https://tse1.mm.bing.net/th?id=OIP.TSMOzugu88dU_rlJkJXCSQHaHa&pid=Api&P=0&h=220',
     'https://tse2.mm.bing.net/th?id=OIP.OcCMakSyTXtuWAe1jWuSXgHaHa&pid=Api&P=0&h=220',
+    'https://tse4.mm.bing.net/th?id=OIP.Js2pupUEp6HOi2qIxnJWWgHaHa&pid=Api&P=0&h=220',
+    'https://tse1.mm.bing.net/th?id=OIP.TSMOzugu88dU_rlJkJXCSQHaHa&pid=Api&P=0&h=220',
+    'https://tse2.mm.bing.net/th?id=OIP.OcCMakSyTXtuWAe1jWuSXgHaHa&pid=Api&P=0&h=220',
+    'https://tse4.mm.bing.net/th?id=OIP.Js2pupUEp6HOi2qIxnJWWgHaHa&pid=Api&P=0&h=220',
     'https://tse4.mm.bing.net/th?id=OIP.Js2pupUEp6HOi2qIxnJWWgHaHa&pid=Api&P=0&h=220'
   ];
   @override
@@ -58,19 +62,73 @@ class _ProductListScreenState extends State<ProductListScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-                itemCount: 300,
+                itemCount: productName.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        Row(
+                  return SingleChildScrollView(
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
                           children: [
-                            ListTile(
-                              title: Text('main'),
+                            Row(
+                              children: [
+                                Image(
+                                    height: 80,
+                                    width: 80,
+                                    image: NetworkImage(
+                                        productLinks[index].toString())),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        productName[index].toString(),
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        productUnit[index].toString() +
+                                            "  " +
+                                            r"$" +
+                                            productPrice[index].toString(),
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Container(
+                                          width: 100,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                              color: Colors.green,
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          child: Center(
+                                            child: Text('Add to cart'),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             )
                           ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
                   );
                 }),
