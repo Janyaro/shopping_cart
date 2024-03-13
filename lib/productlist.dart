@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
+import 'package:shopping_cart/cart_model.dart';
+import 'package:shopping_cart/cart_provider.dart';
+import 'package:shopping_cart/db_helper.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -9,6 +13,7 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  DBHelper dbhelper = DBHelper();
   List<String> productName = [
     "Mango",
     "orange",
@@ -27,7 +32,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     "dozen",
     "kg"
   ];
-  List<String> productPrice = ['10', '20', '30', '40', '80', '60', '50'];
+  List<int> productPrice = [10, 20, 30, 40, 80, 60, 50];
   List<String> productLinks = [
     'https://tse1.mm.bing.net/th?id=OIP.TSMOzugu88dU_rlJkJXCSQHaHa&pid=Api&P=0&h=220',
     'https://tse2.mm.bing.net/th?id=OIP.OcCMakSyTXtuWAe1jWuSXgHaHa&pid=Api&P=0&h=220',
@@ -39,16 +44,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('product list'),
         centerTitle: true,
-        actions: const [
+        actions: [
           Center(
             child: badges.Badge(
-              badgeContent: Text(
-                '0',
-                style: TextStyle(color: Colors.white),
+              badgeContent: Consumer<CartProvider>(
+                builder: (context, value, child) {
+                  return Text(
+                    value.getCounter().toString(),
+                    style: TextStyle(color: Colors.white),
+                  );
+                },
               ),
               child: Icon(Icons.shopping_bag_outlined),
             ),
@@ -109,15 +119,43 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                       ),
                                       Align(
                                         alignment: Alignment.bottomRight,
-                                        child: Container(
-                                          width: 100,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              borderRadius:
-                                                  BorderRadius.circular(5)),
-                                          child: Center(
-                                            child: Text('Add to cart'),
+                                        child: InkWell(
+                                          onTap: () {
+                                            dbhelper
+                                                .insert(Cart(
+                                                    id: index,
+                                                    productId: index.toString(),
+                                                    productName:
+                                                        productName[index]
+                                                            .toString(),
+                                                    ProductPrice:
+                                                        productPrice[index],
+                                                    initialPrice:
+                                                        productPrice[index],
+                                                    quaintity: 1,
+                                                    unitTag: productUnit[index]
+                                                        .toString(),
+                                                    image: productLinks[index]
+                                                        .toString()))
+                                                .then((value) {
+                                              print(
+                                                  'Items is added into the List');
+                                              cart.addTotalPrice(double.parse(
+                                                  productPrice[index]
+                                                      .toString()));
+                                              cart.addCounter();
+                                            }).onError((error, stackTrace) {});
+                                          },
+                                          child: Container(
+                                            width: 100,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            child: Center(
+                                              child: Text('Add to cart'),
+                                            ),
                                           ),
                                         ),
                                       )

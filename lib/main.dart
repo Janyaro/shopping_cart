@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_cart/cart_provider.dart';
 import 'package:shopping_cart/productlist.dart';
 
 void main() {
@@ -15,9 +17,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ProductListScreen(),
+    return ChangeNotifierProvider(
+      create: (_) => CartProvider(),
+      child: Builder(builder: (BuildContext context) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: ProductListScreen(),
+        );
+      }),
     );
   }
 }
